@@ -1,0 +1,177 @@
+[
+    {
+        "id": 1,
+        "name": "Eco-Friendly Water Bottle",
+        "description": "A reusable water bottle made from recycled materials, perfect for on-the-go hydration.",
+        "price": 19.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 2,
+        "name": "Wireless Earbuds",
+        "description": "High-quality wireless earbuds with noise-cancellation and a comfortable fit for all-day wear.",
+        "price": 79.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 3,
+        "name": "Smartphone Stand",
+        "description": "Adjustable smartphone stand for hands-free viewing and video calls, suitable for all phone sizes.",
+        "price": 14.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 4,
+        "name": "Organic Green Tea",
+        "description": "Premium organic green tea leaves, rich in antioxidants and perfect for a refreshing brew.",
+        "price": 9.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 5,
+        "name": "Yoga Mat",
+        "description": "Non-slip yoga mat for a comfortable and stable workout experience, suitable for all fitness levels.",
+        "price": 29.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 6,
+        "name": "Bluetooth Speaker",
+        "description": "Portable Bluetooth speaker with rich sound quality and a battery life of up to 12 hours.",
+        "price": 49.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 7,
+        "name": "LED Desk Lamp",
+        "description": "Stylish LED desk lamp with adjustable brightness and a modern design, perfect for home or office.",
+        "price": 34.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 8,
+        "name": "Fitness Tracker",
+        "description": "Wearable fitness tracker that monitors heart rate, steps, and sleep patterns with a sleek design.",
+        "price": 59.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 9,
+        "name": "Portable Phone Charger",
+        "description": "Compact portable charger with fast charging capabilities, ideal for travelers and busy lifestyles.",
+        "price": 24.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 10,
+        "name": "Ceramic Coffee Mug",
+        "description": "Elegant ceramic mug with a unique design, perfect for enjoying your favorite hot beverages.",
+        "price": 12.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 11,
+        "name": "Travel Backpack",
+        "description": "Spacious and durable travel backpack with multiple compartments for organized packing.",
+        "price": 89.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 12,
+        "name": "Fitness Resistance Bands",
+        "description": "Set of resistance bands for strength training and flexibility exercises, suitable for all fitness levels.",
+        "price": 19.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 13,
+        "name": "Electric Kettle",
+        "description": "Fast-boiling electric kettle with temperature control and auto shut-off feature for safety.",
+        "price": 39.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 14,
+        "name": "Wireless Charging Pad",
+        "description": "Sleek wireless charging pad compatible with all Qi-enabled devices, providing hassle-free charging.",
+        "price": 29.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 15,
+        "name": "Stainless Steel Travel Mug",
+        "description": "Insulated stainless steel travel mug to keep your drinks hot or cold for hours, perfect for commuting.",
+        "price": 25.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 16,
+        "name": "Jigsaw Puzzle",
+        "description": "Challenging 1000-piece jigsaw puzzle featuring a beautiful landscape, great for family fun.",
+        "price": 19.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 17,
+        "name": "Wall Art Canvas",
+        "description": "Vibrant wall art canvas print that adds a pop of color and personality to any room.",
+        "price": 49.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 18,
+        "name": "Pet Grooming Kit",
+        "description": "Complete grooming kit for pets, including brushes, clippers, and nail trimmers for a professional finish.",
+        "price": 34.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 19,
+        "name": "Non-Stick Cookware Set",
+        "description": "Durable non-stick cookware set for effortless cooking and easy cleaning, suitable for all stovetops.",
+        "price": 89.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 20,
+        "name": "Outdoor Picnic Blanket",
+        "description": "Water-resistant picnic blanket with a portable design, perfect for outdoor adventures.",
+        "price": 29.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 21,
+        "name": "Herbal Essential Oils Set",
+        "description": "Set of pure herbal essential oils for aromatherapy, promoting relaxation and well-being.",
+        "price": 39.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 22,
+        "name": "Smart Home Light Bulbs",
+        "description": "Wi-Fi-enabled smart light bulbs that can be controlled via smartphone for customizable lighting.",
+        "price": 49.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 23,
+        "name": "Handcrafted Leather Wallet",
+        "description": "Stylish and durable handcrafted leather wallet, perfect for keeping your essentials organized.",
+        "price": 39.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 24,
+        "name": "Wireless Gaming Mouse",
+        "description": "High-performance wireless gaming mouse with customizable buttons and RGB lighting.",
+        "price": 59.99,
+        "product_image": "https://picsum.photos/200"
+    },
+    {
+        "id": 25,
+        "name": "Gardening Tool Set",
+        "description": "Complete gardening tool set for enthusiasts, including trowel, pruners, and gloves.",
+        "price": 49.99,
+        "product_image": "https://picsum.photos/200"
+    }
+]
