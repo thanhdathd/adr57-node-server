@@ -8,6 +8,7 @@ import os from "os";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import ms from 'ms';
+import { logRequestResponse } from './middlewares/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -35,11 +36,12 @@ const upload = multer({ storage });
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(logRequestResponse); // Sử dụng middleware log request và response
 
 // ===== CONFIG =====
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "demo_access_secret";
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "demo_refresh_secret";
-const ACCESS_TOKEN_EXPIRES = "1m"; // access token 1 phút
+const ACCESS_TOKEN_EXPIRES = "10m"; // access token 1 phút
 const REFRESH_TOKEN_EXPIRES = "7d"; // refresh token 7 ngày
 
 // ===== DATA =====
@@ -106,7 +108,6 @@ app.post("/login", (req, res) => {
 
 // Refresh token endpoint
 app.post("/refresh", (req, res) => {
-  console.log("Request body:", req.body);
   const { refresh_token } = req.body;
   if (!refresh_token) return res.status(401).json({ message: "Missing refresh token" });
   if (!refreshTokens.includes(refresh_token))
@@ -182,6 +183,32 @@ app.get("/users", authenticateToken, (req, res) => {
       total_pages: totalPages,
     },
     data: usersPage,
+  });
+});
+
+// search users by username
+app.get("/users/search", authenticateToken, (req, res) => {
+  const q = req.query.q || "";
+  if (!q) {
+        // Trả về 400 Bad Request nếu thiếu tham số tìm kiếm
+        return res.status(400).json({ 
+            message: "Missing search query parameter 'q'." 
+        });
+  }
+  const matchedUsers = user_list
+  .filter((u) => u.username.toLowerCase().includes(q.toLowerCase()))
+  .map((u) => ({
+    id: u.id,
+    username: u.username,
+    email: u.email,
+    avatar: u.avatar,
+    display_name: u.display_name,
+  }));
+
+  res.json({
+    success: true,
+    message: `Found ${matchedUsers.length} users matching "${q}"`,
+    data: matchedUsers,
   });
 });
 
