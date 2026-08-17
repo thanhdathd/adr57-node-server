@@ -36,6 +36,11 @@ const upload = multer({ storage });
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: "*", // demo thì để *, sau này giới hạn lại
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(logRequestResponse); // Sử dụng middleware log request và response
 
 // ===== CONFIG =====
