@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 import os from "os";
+import cors from "cors";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import ms from 'ms';
@@ -47,7 +48,7 @@ app.use(logRequestResponse); // Sử dụng middleware log request và response
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "demo_access_secret";
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "demo_refresh_secret";
 const ACCESS_TOKEN_EXPIRES = process.env.ACCESS_TOKEN_EXPIRES || "10m"; // "10m"; // access token 10 phút
-const REFRESH_TOKEN_EXPIRES = "7d"; // refresh token 7 ngày
+const REFRESH_TOKEN_EXPIRES = process.env.REFRESH_TOKEN_EXPIRES || "7d"; //"7d"; // refresh token 7 ngày
 
 // ===== DATA =====
 const users = JSON.parse(fs.readFileSync("./data/users.json", "utf-8"));
