@@ -221,23 +221,28 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 3000;
 const HOST = "0.0.0.0";
 
-app.listen(PORT, HOST, () => {
-  const networkInterfaces = os.networkInterfaces();
-  let lanIP = "localhost";
+// Chỉ listen khi chạy local (không phải trên Vercel)
+if (process.env.VERCEL !== "1") {
+  app.listen(PORT, HOST, () => {
+    const networkInterfaces = os.networkInterfaces();
+    let lanIP = "localhost";
 
-  for (const iface of Object.values(networkInterfaces)) {
-    for (const net of iface) {
-      if (net.family === "IPv4" && !net.internal) {
-        lanIP = net.address;
-        break;
+    for (const iface of Object.values(networkInterfaces)) {
+      for (const net of iface) {
+        if (net.family === "IPv4" && !net.internal) {
+          lanIP = net.address;
+          break;
+        }
       }
     }
-  }
-  console.log("=======================================");
-  console.log("🚀 Auth Demo Server is running!");
-  console.log(`➡ Local:   http://localhost:${PORT}`);
-  console.log(`➡ Network: http://${lanIP}:${PORT}`);
-  console.log("=======================================");
-});
+    console.log("=======================================");
+    console.log("🚀 Auth Demo Server is running!");
+    console.log(`➡ Local:   http://localhost:${PORT}`);
+    console.log(`➡ Network: http://${lanIP}:${PORT}`);
+    console.log("=======================================");
+  });
+}
+
+export default app;
 
 
