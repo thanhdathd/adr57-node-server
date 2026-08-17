@@ -46,7 +46,7 @@ app.use(logRequestResponse); // Sử dụng middleware log request và response
 // ===== CONFIG =====
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "demo_access_secret";
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "demo_refresh_secret";
-const ACCESS_TOKEN_EXPIRES = "10m"; // access token 1 phút
+const ACCESS_TOKEN_EXPIRES = process.env.ACCESS_TOKEN_EXPIRES || "10m"; // "10m"; // access token 10 phút
 const REFRESH_TOKEN_EXPIRES = "7d"; // refresh token 7 ngày
 
 // ===== DATA =====
