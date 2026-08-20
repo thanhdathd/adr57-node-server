@@ -9,7 +9,9 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import ms from 'ms';
+import swaggerUi from 'swagger-ui-express';
 import { logRequestResponse } from './middlewares/logger.js';
+import { swaggerSpec } from './swagger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -51,14 +53,59 @@ const ACCESS_TOKEN_EXPIRES = process.env.ACCESS_TOKEN_EXPIRES || "10m"; // "10m"
 const REFRESH_TOKEN_EXPIRES = process.env.REFRESH_TOKEN_EXPIRES || "7d"; //"7d"; // refresh token 7 ngày
 
 // ===== DATA =====
-const users = JSON.parse(fs.readFileSync("./data/users.json", "utf-8"));
-const user_list = JSON.parse(fs.readFileSync("./data/user_list.json", "utf-8"));
-const products = JSON.parse(fs.readFileSync("./data/products.json", "utf-8"));
+const users = JSON.parse(
+  fs.readFileSync(path.join(process.cwd(), "data", "users.json"), "utf-8")
+);
+const user_list = JSON.parse(
+  fs.readFileSync(path.join(process.cwd(), "data", "user_list.json"), "utf-8")
+);
+const products = JSON.parse(
+  fs.readFileSync(path.join(process.cwd(), "data", "products.json"), "utf-8")
+);
 
 // ===== IN-MEMORY STORE =====
 let refreshTokens = [];
 
 // ===== ROUTES =====
+
+/**
+ * @openapi
+ * /upload:
+ *   post:
+ *     summary: Upload an image file
+ *     description: Uploads a single image (multipart/form-data) and returns its public URL.
+ *     tags:
+ *       - Files
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - image
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: The image file to upload
+ *     responses:
+ *       '200':
+ *         description: Upload success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 filename:
+ *                   type: string
+ *                 url:
+ *                   type: string
+ *       '400':
+ *         description: No file uploaded
+ */
 app.post("/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
@@ -81,6 +128,27 @@ if (!fs.existsSync(downloadDir)) {
   fs.mkdirSync(downloadDir);
 }
 
+/**
+ * @openapi
+ * /download/{filename}:
+ *   get:
+ *     summary: Download a file
+ *     description: Downloads a file that exists in the downloads directory.
+ *     tags:
+ *       - Files
+ *     parameters:
+ *       - in: path
+ *         name: filename
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The filename to download
+ *     responses:
+ *       '200':
+ *         description: File download started
+ *       '404':
+ *         description: File not found
+ */
 app.get("/download/:filename", (req, res) => {
   const filePath = path.join(downloadDir, req.params.filename);
 
@@ -92,7 +160,53 @@ app.get("/download/:filename", (req, res) => {
 });
 
 
-// Login endpoint
+/**
+ * @openapi
+ * /login:
+ *   post:
+ *     summary: Login
+ *     description: Authenticates a user and returns access + refresh tokens.
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: thanhdat@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: "123456"
+ *     responses:
+ *       '200':
+ *         description: Login success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user_id:
+ *                   type: number
+ *                 email:
+ *                   type: string
+ *                 username:
+ *                   type: string
+ *                 access_token:
+ *                   type: string
+ *                 refresh_token:
+ *                   type: string
+ *       '401':
+ *         description: Invalid credentials
+ */
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -112,7 +226,49 @@ app.post("/login", (req, res) => {
   res.json({ message: "Success", user_id: user.id, email: user.email, username: user.username, access_token: accessToken, refresh_token: refreshToken });
 });
 
-// Refresh token endpoint
+/**
+ * @openapi
+ * /refresh:
+ *   post:
+ *     summary: Refresh access token
+ *     description: Uses a valid refresh token to obtain a new access token.
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refresh_token
+ *             properties:
+ *               refresh_token:
+ *                 type: string
+ *                 description: The refresh token from /login
+ *     responses:
+ *       '200':
+ *         description: New access token issued
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 access_token:
+ *                   type: string
+ *                 refresh_token:
+ *                   type: string
+ *                 token_type:
+ *                   type: string
+ *                 expires_in:
+ *                   type: number
+ *       '401':
+ *         description: Missing refresh token
+ *       '403':
+ *         description: Invalid refresh token
+ */
 app.post("/refresh", (req, res) => {
   const { refresh_token } = req.body;
   if (!refresh_token) return res.status(401).json({ message: "Missing refresh token" });
@@ -130,7 +286,30 @@ app.post("/refresh", (req, res) => {
   });
 });
 
-// Logout endpoint
+/**
+ * @openapi
+ * /logout:
+ *   post:
+ *     summary: Logout
+ *     description: Invalidates the given refresh token.
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refresh_token
+ *             properties:
+ *               refresh_token:
+ *                 type: string
+ *                 description: The refresh token to revoke
+ *     responses:
+ *       '200':
+ *         description: Logged out successfully
+ */
 app.post("/logout", (req, res) => {
   const { refresh_token } = req.body;
   refreshTokens = refreshTokens.filter((t) => t !== refresh_token);
@@ -150,6 +329,33 @@ function authenticateToken(req, res, next) {
   });
 }
 
+/**
+ * @openapi
+ * /products:
+ *   get:
+ *     summary: Get products (protected)
+ *     description: Returns the product list. Requires a valid Bearer access token.
+ *     tags:
+ *       - Products
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Product list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                 products:
+ *                   type: array
+ *       '401':
+ *         description: Missing token
+ *       '403':
+ *         description: Invalid or expired token
+ */
 // Protected route: /products
 app.get("/products", authenticateToken, (req, res) => {
   res.json({
@@ -162,6 +368,72 @@ app.get("/products", authenticateToken, (req, res) => {
 // Route: GET /users (có pagination)
 // ---------------------------
 
+/**
+ * @openapi
+ * /users:
+ *   get:
+ *     summary: Get user list with pagination (protected)
+ *     description: Returns a paginated user list. Requires a valid Bearer access token.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
+ *     responses:
+ *       '200':
+ *         description: Paginated user list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     current_page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total_items:
+ *                       type: integer
+ *                     total_pages:
+ *                       type: integer
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: number
+ *                       username:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       avatar:
+ *                         type: string
+ *                       display_name:
+ *                         type: string
+ *       '401':
+ *         description: Missing token
+ *       '403':
+ *         description: Invalid or expired token
+ */
 app.get("/users", authenticateToken, (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -192,6 +464,46 @@ app.get("/users", authenticateToken, (req, res) => {
   });
 });
 
+/**
+ * @openapi
+ * /users/search:
+ *   get:
+ *     summary: Search users by username (protected)
+ *     description: Searches users whose username partially matches the query. Requires a valid Bearer access token.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The search keyword (substring of username)
+ *     responses:
+ *       '200':
+ *         description: Matching users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       '400':
+ *         description: Missing search query parameter 'q'
+ *       '401':
+ *         description: Missing token
+ *       '403':
+ *         description: Invalid or expired token
+ */
 // search users by username
 app.get("/users/search", authenticateToken, (req, res) => {
   const q = req.query.q || "";
@@ -221,6 +533,13 @@ app.get("/users/search", authenticateToken, (req, res) => {
 // Public route
 app.get("/", (req, res) => {
   res.json({ message: "Auth demo server is running" });
+});
+
+// ===== SWAGGER DOCS =====
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get("/docs.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerSpec);
 });
 
 // ===== START =====
