@@ -1,10 +1,7 @@
 {
   "functions": {
     "server.js": {
-      "includeFiles": [
-        "data/**",
-        "node_modules/swagger-ui-dist/**"
-      ]
+      "includeFiles": "data/**"
     }
   }
 }

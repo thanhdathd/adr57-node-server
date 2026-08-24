@@ -9,7 +9,6 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import ms from 'ms';
-import swaggerUi from 'swagger-ui-express';
 import { logRequestResponse } from './middlewares/logger.js';
 import { swaggerSpec } from './swagger.js';
 
@@ -536,7 +535,23 @@ app.get("/", (req, res) => {
 });
 
 // ===== SWAGGER DOCS =====
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get("/docs", (req, res) => {
+  res.type("html").send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Auth Demo API Docs</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css"/>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script>
+    SwaggerUIBundle({ url: '/docs.json', dom_id: '#swagger-ui' });
+  </script>
+</body>
+</html>`);
+});
 app.get("/docs.json", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(swaggerSpec);
